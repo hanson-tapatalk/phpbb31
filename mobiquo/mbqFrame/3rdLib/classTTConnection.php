@@ -224,40 +224,6 @@ if(!class_exists('classTTConnection'))
 
 	    /**
 	     *
-	     * check if a email or ip is spam
-	     * @param string $email
-	     * @param string $ip
-	     * @return bool
-	     */
-	    public function checkSpam($email,$ip='')
-	    {
-	        if($email || $ip)
-	        {
-	            $email = @urlencode($email);
-	            $params = '';
-	            if($email)
-	            {
-	                $params = "&email=$email";
-	            }
-	            if($ip)
-	            {
-	                $params .= "&ip=$ip";
-	            }
-	            $this->timeout = 3;
-	            $url = "http://www.stopforumspam.com/api?f=serial".$params;
-	            $resp = $this->getContentFromSever($url,array(),'get');
-	            $resp = @unserialize($resp);
-	            if((isset($resp['email']['confidence']) && $resp['email']['confidence'] > 50) ||
-	               (isset($resp['ip']['confidence']) && $resp['ip']['confidence'] > 60))
-	            {
-	                return true;
-	            }
-	        }
-	        return false;
-	    }
-
-	    /**
-	     *
 	     * Enter description here ...
 	     * @param array $data
 	     * @param complex $push_slug

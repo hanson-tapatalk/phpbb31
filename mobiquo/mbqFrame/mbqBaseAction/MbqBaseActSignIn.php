@@ -53,8 +53,6 @@ Abstract Class MbqBaseActSignIn extends MbqBaseAct {
         if (!class_exists('classTTConnection')){
             include_once(MBQ_3RD_LIB_PATH . 'classTTConnection.php');
         }
-        $oMbqRdCommon = MbqMain::$oClk->newObj('MbqRdCommon');
-        $check_spam = $oMbqRdCommon->getCheckSpam();
         $this->register = !empty($in->password);
         $result = false;
         if($this->register)
@@ -78,7 +76,7 @@ Abstract Class MbqBaseActSignIn extends MbqBaseAct {
                     $this->TTVerify($in->token, $in->code);
                 }
                 $accountIsValidated =  $this->verified && $this->TTEmail == $in->email;
-                $this->createUser($in->email, $in->username, $in->password, $in->customRegisterFields, $check_spam, $accountIsValidated);
+                $this->createUser($in->email, $in->username, $in->password, $in->customRegisterFields, $accountIsValidated);
                 $result = $this->loginUser($in->trustCode);
             }
         }
@@ -155,7 +153,7 @@ Abstract Class MbqBaseActSignIn extends MbqBaseAct {
         }
     }
 
-    public function createUser($email, $username, $password, $custom_register_fields, $check_spam = false, $verified)
+    public function createUser($email, $username, $password, $custom_register_fields, $verified)
     {
         if (empty($email))
         {
@@ -169,32 +167,26 @@ Abstract Class MbqBaseActSignIn extends MbqBaseAct {
         }
         else
         {
-            $connection = new classTTConnection();
-            if($check_spam && $connection->checkSpam($email))
+
+            $oMbqWrEtUser = MbqMain::$oClk->newObj('MbqWrEtUser');
+            if($this->validateUsername($username))
             {
-                $this->errors[] = 'Your email or IP address matches that of a known spammer and therefore you cannot register here. If you feel this is an error, please contact the administrator or try again later.';
-            }
-            else
-            {
-                $oMbqWrEtUser = MbqMain::$oClk->newObj('MbqWrEtUser');
-                if($this->validateUsername($username))
+                if($password = $this->validatePassword($password, $verified))
                 {
-                    if($password = $this->validatePassword($password, $verified))
-                    {
-                        $this->oMbqEtUser = $oMbqWrEtUser->registerUser($username,  $password, $email, $verified, $custom_register_fields, $this->TTProfile, $this->errors);
-                    }
-                    else
-                    {
-                        $this->status = 2;
-                        $this->errors[] = 'Password does not comply with the password policy set by the forum Administrator.  Please try another.';
-                    }
+                    $this->oMbqEtUser = $oMbqWrEtUser->registerUser($username,  $password, $email, $verified, $custom_register_fields, $this->TTProfile, $this->errors);
                 }
                 else
                 {
                     $this->status = 2;
-                    $this->errors[] = 'This username already exists. Please try another.';
+                    $this->errors[] = 'Password does not comply with the password policy set by the forum Administrator.  Please try another.';
                 }
             }
+            else
+            {
+                $this->status = 2;
+                $this->errors[] = 'This username already exists. Please try another.';
+            }
+
         }
     }
 

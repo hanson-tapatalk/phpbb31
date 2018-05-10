@@ -413,14 +413,14 @@ Class MbqRdEtPm extends MbqBaseRdEtPm {
             if ($folder_id == PRIVMSGS_OUTBOX || $folder_id == PRIVMSGS_SENTBOX)
             {
                 $msg_to_list = array();
-                $address = explode(',',$row['to_address']);
+                $address = explode(':',$row['to_address']);
                 foreach($address as $addr)
                 {
                     $toid =  str_replace('u_','',$addr);
-                    if($user->data['user_id'] != $toid)
-                    {
+                    //if($user->data['user_id'] != $toid)  // when send you self
+                    //{
                         $msg_to_list[] = $toid;
-                    }
+                    //}
                 }
             }
             else

@@ -2,22 +2,22 @@
 
 defined('MBQ_IN_IT') or exit;
 
-MbqMain::$oClk->includeClass('MbqBaseActNewTopic');
+MbqMain::$oClk->includeClass('MbqBaseActGetMemberList');
 
-/**
- * new_topic action
- */
-Class MbqActNewTopic extends MbqBaseActNewTopic {
+
+Class MbqActGetMemberList extends MbqBaseActGetMemberList {
     
     public function __construct() {
         parent::__construct();
     }
-    
+
     /**
      * action implement
+     *
+     * @param $in
      */
     public function actionImplement($in) {
-        return parent::actionImplement($in);
+        parent::actionImplement($in);
     }
   
 }

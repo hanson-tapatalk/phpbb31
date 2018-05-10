@@ -38,6 +38,12 @@ Class MbqActGetConfig extends MbqBaseActGetConfig {
             'active' => $config['record_online_users'],
         ));
         $this->setCustomconfig('started_by',1);
+        $this->setCustomconfig('poll_options_max_count', $config['max_poll_options']);
+        $this->setCustomconfig('get_member_list', 1);
+        $this->setCustomconfig('m_get_inactive_users', 1);
+        $this->setCustomconfig('m_approve_user', 1);
+        $this->setCustomconfig('guest_reply_post', 1);
+        $this->setCustomconfig('guest_new_topic', 1);
     }
     
     public function setCustomConfig($name, $value)
